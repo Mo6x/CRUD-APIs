@@ -3,15 +3,15 @@ import mongoose from "mongoose";
 import compression from "compression";
 import cors from "cors";
 import morgan from "morgan";
-import controller from "@/utils/interface/controller.interface";
-import ErrorMiddleware from "@/middleware/error.middleware";
+import Controller from "@/utils/interfaces/controller.Interface";
+import ErrorMiddleware from "@/middleware/error.Middleware";
 import helmet from "helmet";
 
 class App {
     public express: Application;
     public port: number;
 
-    constructor(controllers: controller[], port: number) {
+    constructor(controllers: Controller[], port: number) {
         this.express = express();
         this.port = port
 
@@ -37,7 +37,7 @@ class App {
         }
 
         private initialiseErrorHandling(): void {
-            this.express.use(ErrorMiddleware());
+            this.express.use(ErrorMiddleware);
         }
 
         private initialiseDatabaseConnection(): void {
