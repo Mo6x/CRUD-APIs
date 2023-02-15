@@ -1,6 +1,33 @@
-import { Router, Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 import Joi from "joi";
 
+function validationMiddleware(schema: Joi.Schema): RequestHandler {
+    return async (
+       req: Request,
+       res: Response,
+       next: NextFunction
+    ): Promise<void> => {
+       const validateOption = {
+           abortEarly: false,
+           allowUnknown: true,
+           stripUnknown: true,
+       };
 
+       try{
+        const value = await schema.validateAsync(
+            req.body,
+            validateOption
+        );
+        req.body = value;
+        next();
+       } catch (e: any) {
+         const errors: string[] = [];
+         e.details.forEach((error: Joi.ValidationErrorItem) => {
+            errors.push(error.message)
+         });
+          res.status(400).send({ errors: console.error });
+       }
+    };
+}
 
-
+export default validationMiddleware
